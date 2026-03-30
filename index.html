@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrando a Caída Venezolana...</title>
+    <title>Entrando a Caída Club...</title>
     <style>
         body {
             background-color: #1a1a1a;
@@ -25,45 +25,98 @@
             border-radius: 25px;
             font-weight: bold;
             font-size: 18px;
-            margin-top: 20px;
             display: inline-block;
+            cursor: pointer;
+            border: none;
+            width: 80%;
+            max-width: 300px;
+        }
+        .btn-secondary {
+            background-color: #28a745;
+        }
+        .codigo-box {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 22px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: #ffcc00; /* Un color doradito para que resalte */
+        }
+        .instrucciones {
+            color: #ccc;
+            margin-top: 15px;
+            max-width: 85%;
+            line-height: 1.5;
+            font-size: 16px;
+        }
+        .botones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <h2>🚀 Abriendo el juego...</h2>
-    <p>Si no se abre automáticamente, toca el botón:</p>
-    
-    <a id="botonEntrar" href="#" class="btn">Entrar a la Sala</a>
+    <h2 id="titulo">🚀 Preparando partida...</h2>
+
+    <div id="contenido" style="display:none; width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <p class="instrucciones">Toca el botón azul para abrir el juego automáticamente.<br><br><b>¿Estás en iPhone o no abre?</b> Copia el código de abajo y pégalo en la sección "Unirse" dentro del juego.</p>
+        
+        <div class="codigo-box" id="textoCodigo">CÓDIGO</div>
+        
+        <div class="botones-container">
+            <a id="botonEntrar" href="#" class="btn">🎮 Entrar a la Sala</a>
+            <button id="botonCopiar" class="btn btn-secondary" onclick="copiarCodigo()">📋 Copiar Código</button>
+        </div>
+        <p id="mensajeCopiado" style="color: #28a745; display: none; font-weight: bold; margin-top: 15px;">¡Código copiado al portapapeles!</p>
+    </div>
+
+    <h2 id="errorMsj" style="display:none; color: #ff4c4c;">⚠️ Error: Enlace inválido</h2>
 
     <script>
         const params = new URLSearchParams(window.location.search);
         const lobbyId = params.get('lobby');
-        const hostName = params.get('name'); // Leemos el nombre
+        const hostName = params.get('name');
 
         if (lobbyId) {
-            // Construimos el deep link pasando también el nombre
-            // caida://unirse?lobby=XYZ &name=Juan
+            document.getElementById("contenido").style.display = "flex";
+            document.getElementById("textoCodigo").innerText = lobbyId;
+
             let deepLink = "caida://unirse?lobby=" + lobbyId;
-            
             if (hostName) {
-                deepLink += "&name=" + hostName;
+                // encodeURIComponent asegura que los espacios en el nombre no rompan el link en iOS
+                deepLink += "&name=" + encodeURIComponent(hostName);
+                document.getElementById("titulo").innerText = "🚀 " + hostName + " te invita a jugar...";
             }
 
             document.getElementById("botonEntrar").href = deepLink;
-            
-            // Cambiamos el título visualmente en la web
-            if (hostName) {
-                document.querySelector("h2").innerText = "🚀 " + decodeURIComponent(hostName) + " te invita a jugar...";
-            }
 
+            // Intentamos el redireccionamiento automático. Si Safari lo bloquea, el usuario ya tiene los botones listos.
             setTimeout(function() {
                 window.location.href = deepLink;
-            }, 500);
+            }, 800);
 
         } else {
-            document.querySelector("h2").innerText = "⚠️ Error: Link incompleto";
-            document.getElementById("botonEntrar").style.display = "none";
+            document.getElementById("titulo").style.display = "none";
+            document.getElementById("contenido").style.display = "none";
+            document.getElementById("errorMsj").style.display = "block";
+        }
+
+        function copiarCodigo() {
+            if(lobbyId) {
+                navigator.clipboard.writeText(lobbyId).then(() => {
+                    let msj = document.getElementById("mensajeCopiado");
+                    msj.style.display = "block";
+                    // Ocultar el mensaje después de 3 segundos
+                    setTimeout(() => msj.style.display = "none", 3000);
+                }).catch(err => {
+                    alert("Error al copiar: " + err);
+                });
+            }
         }
     </script>
 </body>
