@@ -39,10 +39,16 @@
             padding: 15px;
             border-radius: 10px;
             margin: 20px 0;
-            font-size: 22px;
-            letter-spacing: 2px;
-            font-weight: bold;
-            color: #ffcc00; /* Un color doradito para que resalte */
+            
+            /* --- EL FIX DE TAMAÑO ESTÁ AQUÍ --- */
+            font-size: 14px; /* Tamaño más pequeño para que quepa */
+            letter-spacing: 1px;
+            font-weight: normal; /* Le quitamos la negrita excesiva */
+            color: #ffcc00;
+            word-break: break-all; /* Obliga al código largo a bajar de línea sin salirse */
+            max-width: 80%; /* Evita que el cuadro toque los bordes del celular */
+            box-sizing: border-box;
+            /* ---------------------------------- */
         }
         .instrucciones {
             color: #ccc;
@@ -88,14 +94,12 @@
 
             let deepLink = "caida://unirse?lobby=" + lobbyId;
             if (hostName) {
-                // encodeURIComponent asegura que los espacios en el nombre no rompan el link en iOS
                 deepLink += "&name=" + encodeURIComponent(hostName);
                 document.getElementById("titulo").innerText = "🚀 " + hostName + " te invita a jugar...";
             }
 
             document.getElementById("botonEntrar").href = deepLink;
 
-            // Intentamos el redireccionamiento automático. Si Safari lo bloquea, el usuario ya tiene los botones listos.
             setTimeout(function() {
                 window.location.href = deepLink;
             }, 800);
@@ -111,7 +115,6 @@
                 navigator.clipboard.writeText(lobbyId).then(() => {
                     let msj = document.getElementById("mensajeCopiado");
                     msj.style.display = "block";
-                    // Ocultar el mensaje después de 3 segundos
                     setTimeout(() => msj.style.display = "none", 3000);
                 }).catch(err => {
                     alert("Error al copiar: " + err);
