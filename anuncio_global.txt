@@ -1,1 +1,1 @@
-2|¡Bienvenidos a la nueva versión!|Gracias por descargar la actualización.\n\nHemos añadido las salas públicas y arreglado los FPS en pantallas de 90Hz.\n\n¡Que lo disfruten!
+0|¡Bienvenidos a la nueva versión!|Gracias por descargar la actualización.\n\nHemos añadido las salas públicas y arreglado los FPS en pantallas de 90Hz.\n\n¡Que lo disfruten!
